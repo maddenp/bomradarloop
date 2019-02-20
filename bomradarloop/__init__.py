@@ -70,33 +70,36 @@ RADARS = {
 
 class BOMRadarLoop:
 
-    def __init__(
-            self,
-            location=None,
-            radar_id=None,
-            delta=None,
-            frames=None,
-            outfile=None,
-            logger=None,
-    ):
+    def __init__(self, location=None, radar_id=None, delta=None, frames=None, outfile=None, logger=None):
 
-        if location and radar_id:
-            raise ValueError("Specify one of 'location' or 'radar_id'")
+        self._log = logger or logging.getLogger(__name__)
+
+        if isinstance(radar_id, int):
+            radar_id = '%03d' % radar_id
+
+        valids = ', '.join(sorted(RADARS.keys()))
+
+        if not radar_id and location not in RADARS:
+            location = 'Sydney'
+            self._log.info("Bad 'location' specified, using '%s' (valid locations are: %s)", location, valids)
+        if radar_id:
+            if location in RADARS:
+                radar_id = None
+                self._log.info("Valid 'location' specified, ignoring 'radar_id'")
+            elif location:
+                self._log.info("Bad 'location' specified, using ID %s (valid locations are: %s)", radar_id, valids)
         if radar_id and not delta:
-            raise ValueError("Specify 'delta' when 'radar_id' is specified")
+            delta = 360
+            self._log.info("No 'delta' specified for radar ID %s, using %s", radar_id, delta)
         if radar_id and not frames:
-            raise ValueError("Specify 'frames' when 'radar_id' is specified")
-        if location and location not in RADARS.keys():
-            raise ValueError("'location' must be one of %s" % (
-                ', '.join(sorted(RADARS.keys()))
-            ))
+            frames = 6
+            self._log.info("No 'frames' specified for radar ID %s, using %s", radar_id, frames)
 
         self._location = location or 'ID %s' % radar_id
-        self._delta = int(delta or RADARS[location]['delta'])
-        self._frames = int(frames or RADARS[location]['frames'])
-        self._radar_id = int(radar_id or RADARS[location]['id'])
+        self._delta = delta or RADARS[location]['delta']
+        self._frames = frames or RADARS[location]['frames']
+        self._radar_id = radar_id or RADARS[location]['id']
         self._outfile = outfile
-        self._log = logger or logging.getLogger(__name__)
 
         self._t0 = 0
         self._current = self.current
@@ -123,27 +126,15 @@ class BOMRadarLoop:
         names), and distance-from-radar range markings, and merge into a single
         image.
         '''
-        self._log.info(
-            'Getting background for %s at %s',
-            self._location,
-            self._t0
-        )
+        self._log.info('Getting background for %s at %s', self._location, self._t0)
         suffix0 = 'products/radar_transparencies/IDR%s.background.png'
         url0 = self._get_url(suffix0 % self._radar_id)
         background = self._get_image(url0)
         if background is None:
             return None
         for layer in ('topography', 'locations', 'range'):
-            self._log.info(
-                'Getting %s for %s at %s',
-                layer,
-                self._location,
-                self._t0
-            )
-            suffix1 = 'products/radar_transparencies/IDR%s.%s.png' % (
-                self._radar_id,
-                layer
-            )
+            self._log.info('Getting %s for %s at %s', layer, self._location, self._t0)
+            suffix1 = 'products/radar_transparencies/IDR%s.%s.png' % (self._radar_id, layer)
             url1 = self._get_url(suffix1)
             image = self._get_image(url1)
             if image is not None:
@@ -173,10 +164,7 @@ class BOMRadarLoop:
         background = self._get_background()
         if background is None:
             return None
-        composites = pool1.map(
-            lambda x: PIL.Image.alpha_composite(background, x),
-            wximages
-        )
+        composites = pool1.map(lambda x: PIL.Image.alpha_composite(background, x), wximages)
         legend = self._get_legend()
         if legend is None:
             return None
@@ -213,23 +201,11 @@ class BOMRadarLoop:
         loop = io.BytesIO()
         frames = self._get_frames()
         if frames is not None:
-            self._log.info(
-                'Got %s frames for %s at %s',
-                len(frames),
-                self._location,
-                self._t0
-            )
-            frames[0].save(
-                loop,
-                append_images=frames[1:],
-                duration=500,
-                format='GIF',
-                loop=0,
-                save_all=True
-            )
+            self._log.info('Got %s frames for %s at %s', len(frames), self._location, self._t0)
+            frames[0].save(loop, append_images=frames[1:], duration=500, format='GIF', loop=0, save_all=True)
         else:
             self._log.info('Got NO frames for %s at %s', self._location, self._t0)
-            PIL.Image.new('RGB', (340, 370)).save(loop, format='GIF')
+            PIL.Image.new('RGB', (512, 557)).save(loop, format='GIF')
         if self._outfile:
             outdir = os.path.dirname(self._outfile)
             if not os.path.isdir(outdir):
@@ -252,10 +228,7 @@ class BOMRadarLoop:
         self._log.info('Getting time strings starting at %s', self._t0)
         frame_numbers = range(self._frames, 0, -1)
         tz = dt.timezone.utc
-        f = lambda n: dt.datetime.fromtimestamp(
-            self._t0 - (self._delta * n),
-            tz=tz
-        ).strftime('%Y%m%d%H%M')
+        f = lambda n: dt.datetime.fromtimestamp(self._t0 - (self._delta * n), tz=tz).strftime('%Y%m%d%H%M')
         return [f(n) for n in frame_numbers]
 
     def _get_url(self, path): # pylint: disable=no-self-use
@@ -268,11 +241,7 @@ class BOMRadarLoop:
         get_image() returns None if the image could not be fetched, so the
         caller must deal with that possibility.
         '''
-        self._log.info(
-            'Getting radar imagery for %s at %s',
-            self._location,
-            time_str
-        )
+        self._log.info('Getting radar imagery for %s at %s', self._location, time_str)
         suffix = '/radar/IDR%s.T.%s.png' % (self._radar_id, time_str)
         url = self._get_url(suffix)
         return self._get_image(url)
