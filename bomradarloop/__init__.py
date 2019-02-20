@@ -81,19 +81,19 @@ class BOMRadarLoop:
 
         if not radar_id and location not in RADARS:
             location = 'Sydney'
-            self._log.info("Bad 'location' specified, using '%s' (valid locations are: %s)", location, valids)
+            self._log.error("Bad 'location' specified, using '%s' (valid locations are: %s)", location, valids)
         if radar_id:
             if location in RADARS:
                 radar_id = None
-                self._log.info("Valid 'location' specified, ignoring 'radar_id'")
+                self._log.error("Valid 'location' specified, ignoring 'radar_id'")
             elif location:
-                self._log.info("Bad 'location' specified, using ID %s (valid locations are: %s)", radar_id, valids)
+                self._log.error("Bad 'location' specified, using ID %s (valid locations are: %s)", radar_id, valids)
         if radar_id and not delta:
             delta = 360
-            self._log.info("No 'delta' specified for radar ID %s, using %s", radar_id, delta)
+            self._log.error("No 'delta' specified for radar ID %s, using %s", radar_id, delta)
         if radar_id and not frames:
             frames = 6
-            self._log.info("No 'frames' specified for radar ID %s, using %s", radar_id, frames)
+            self._log.error("No 'frames' specified for radar ID %s, using %s", radar_id, frames)
 
         self._location = location or 'ID %s' % radar_id
         self._delta = delta or RADARS[location]['delta']
