@@ -242,6 +242,6 @@ class BOMRadarLoop:
         caller must deal with that possibility.
         '''
         self._log.info('Getting radar imagery for %s at %s', self._location, time_str)
-        suffix = '/radar/IDR%s.T.%s.png' % (self._radar_id, time_str)
+        suffix = 'radar/IDR%s.T.%s.png' % (self._radar_id, time_str)
         url = self._get_url(suffix)
         return self._get_image(url)
