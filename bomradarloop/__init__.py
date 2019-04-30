@@ -142,31 +142,23 @@ class BOMRadarLoop:
 
     def _get_frames(self):
         '''
-        Use a thread pool to fetch a set of current radar images in parallel, ####################### FIX
-        then get a background image for this location, combine it with the
-        colorbar legend, and finally composite each radar image onto a copy of
-        the combined background/legend image.
-
-        The 'wximages' list is created so that requested images that could not
-        be fetched are excluded, so that the set of frames will be a best-
-        effort set of whatever was actually available at request time. If the
-        list is empty, None is returned; the caller can decide how to handle
-        that.
+        Fetch a radar image for each expected time, composite it with a common
+        background image, then overlay on the legend to produce a frame. Collect
+        and return the frames, ignoring any blanks. If no frames were produced,
+        return None (the caller must expect this).
         '''
         self._log.debug('Getting frames for %s at %s', self._location, self._t0)
-        background = self._get_background()
+        bg = self._get_background()
         legend = self._get_legend()
-        if background is None or legend is None:
-            return None
-        frames = []
-        for time_str in self._get_time_strs():
-            wximg = self._get_wximg(time_str)
-            if wximg is not None:
-                composite = PIL.Image.alpha_composite(background, wximg)
-                frame = legend.copy()
-                frame.paste(composite, (0, 0))
-                frames.append(frame)
-        return frames
+        if bg and legend:
+            frames = []
+            for time_str in self._get_time_strs():
+                fg = self._get_wximg(time_str)
+                if fg is not None:
+                    frames.append(legend.copy())
+                    frames[-1].paste(PIL.Image.alpha_composite(bg, fg), (0, 0))
+            return frames
+        return None
 
     def _get_image(self, url): # pylint: disable=no-self-use
         '''
