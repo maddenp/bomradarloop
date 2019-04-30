@@ -150,15 +150,14 @@ class BOMRadarLoop:
         self._log.debug('Getting frames for %s at %s', self._location, self._t0)
         bg = self._get_background()
         legend = self._get_legend()
+        frames = []
         if bg and legend:
-            frames = []
             for time_str in self._get_time_strs():
                 fg = self._get_wximg(time_str)
                 if fg is not None:
                     frames.append(legend.copy())
                     frames[-1].paste(PIL.Image.alpha_composite(bg, fg), (0, 0))
-            return frames
-        return None
+        return frames or None
 
     def _get_image(self, url): # pylint: disable=no-self-use
         '''
