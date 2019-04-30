@@ -142,7 +142,7 @@ class BOMRadarLoop:
 
     def _get_frames(self):
         '''
-        Use a thread pool to fetch a set of current radar images in parallel,
+        Use a thread pool to fetch a set of current radar images in parallel, ####################### FIX
         then get a background image for this location, combine it with the
         colorbar legend, and finally composite each radar image onto a copy of
         the combined background/legend image.
@@ -156,14 +156,16 @@ class BOMRadarLoop:
         self._log.debug('Getting frames for %s at %s', self._location, self._t0)
         background = self._get_background()
         legend = self._get_legend()
-        candidates = [self._get_wximg(x) for x in self._get_time_strs()]
-        wximages = [x for x in candidates if x is not None]
-        if background is None or legend is None or not wximages:
+        if background is None or legend is None:
             return None
-        composites = [PIL.Image.alpha_composite(background, x) for x in wximages]
-        frames = [legend.copy() for _ in composites]
-        for x in zip(frames, composites):
-            x[0].paste(x[1], (0, 0))
+        frames = []
+        for time_str in self._get_time_strs():
+            wximg = self._get_wximg(time_str)
+            if wximg is not None:
+                composite = PIL.Image.alpha_composite(background, wximg)
+                frame = legend.copy()
+                frame.paste(composite, (0, 0))
+                frames.append(frame)
         return frames
 
     def _get_image(self, url): # pylint: disable=no-self-use
