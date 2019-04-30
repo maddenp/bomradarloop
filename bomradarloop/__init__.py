@@ -174,7 +174,9 @@ class BOMRadarLoop:
         response = requests.get(url)
         if response.status_code == 200:
             image = PIL.Image.open(io.BytesIO(response.content))
-            return image.convert('RGBA')
+            rgba_img = image.convert('RGBA')
+            image.close()
+            return rgba_img
         return None
 
     def _get_legend(self):
