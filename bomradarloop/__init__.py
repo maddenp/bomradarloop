@@ -1,7 +1,6 @@
 import datetime as dt
 import io
 import logging
-import multiprocessing.dummy
 import os
 import time
 
@@ -154,22 +153,17 @@ class BOMRadarLoop:
         list is empty, None is returned; the caller can decide how to handle
         that.
         '''
-        self._log.info('Getting frames for %s at %s', self._location, self._t0)
-        pool0 = multiprocessing.dummy.Pool(self._frames)
-        raw = pool0.map(self._get_wximg, self._get_time_strs())
-        wximages = [x for x in raw if x is not None]
-        if not wximages:
-            return None
-        pool1 = multiprocessing.dummy.Pool(len(wximages))
+        self._log.debug('Getting frames for %s at %s', self._location, self._t0)
         background = self._get_background()
-        if background is None:
-            return None
-        composites = pool1.map(lambda x: PIL.Image.alpha_composite(background, x), wximages)
         legend = self._get_legend()
-        if legend is None:
+        candidates = [self._get_wximg(x) for x in self._get_time_strs()]
+        wximages = [x for x in candidates if x is not None]
+        if background is None or legend is None or not wximages:
             return None
-        frames = pool1.map(lambda _: legend.copy(), composites)
-        pool1.map(lambda x: x[0].paste(x[1], (0, 0)), zip(frames, composites))
+        composites = [PIL.Image.alpha_composite(background, x) for x in wximages]
+        frames = [legend.copy() for _ in composites]
+        for x in zip(frames, composites):
+            x[0].paste(x[1], (0, 0))
         return frames
 
     def _get_image(self, url): # pylint: disable=no-self-use
