@@ -1,7 +1,6 @@
 import datetime as dt
 import io
 import logging
-import multiprocessing.dummy
 import os
 import time
 
@@ -126,14 +125,14 @@ class BOMRadarLoop:
         names), and distance-from-radar range markings, and merge into a single
         image.
         '''
-        self._log.info('Getting background for %s at %s', self._location, self._t0)
+        self._log.debug('Getting background for %s at %s', self._location, self._t0)
         suffix0 = 'products/radar_transparencies/IDR%s.background.png'
         url0 = self._get_url(suffix0 % self._radar_id)
         background = self._get_image(url0)
         if background is None:
             return None
         for layer in ('topography', 'locations', 'range'):
-            self._log.info('Getting %s for %s at %s', layer, self._location, self._t0)
+            self._log.debug('Getting %s for %s at %s', layer, self._location, self._t0)
             suffix1 = 'products/radar_transparencies/IDR%s.%s.png' % (self._radar_id, layer)
             url1 = self._get_url(suffix1)
             image = self._get_image(url1)
@@ -143,51 +142,41 @@ class BOMRadarLoop:
 
     def _get_frames(self):
         '''
-        Use a thread pool to fetch a set of current radar images in parallel,
-        then get a background image for this location, combine it with the
-        colorbar legend, and finally composite each radar image onto a copy of
-        the combined background/legend image.
-
-        The 'wximages' list is created so that requested images that could not
-        be fetched are excluded, so that the set of frames will be a best-
-        effort set of whatever was actually available at request time. If the
-        list is empty, None is returned; the caller can decide how to handle
-        that.
+        Fetch a radar image for each expected time, composite it with a common
+        background image, then overlay on the legend to produce a frame. Collect
+        and return the frames, ignoring any blanks. If no frames were produced,
+        return None (the caller must expect this).
         '''
-        self._log.info('Getting frames for %s at %s', self._location, self._t0)
-        pool0 = multiprocessing.dummy.Pool(self._frames)
-        raw = pool0.map(self._get_wximg, self._get_time_strs())
-        wximages = [x for x in raw if x is not None]
-        if not wximages:
-            return None
-        pool1 = multiprocessing.dummy.Pool(len(wximages))
-        background = self._get_background()
-        if background is None:
-            return None
-        composites = pool1.map(lambda x: PIL.Image.alpha_composite(background, x), wximages)
+        self._log.debug('Getting frames for %s at %s', self._location, self._t0)
+        bg = self._get_background()
         legend = self._get_legend()
-        if legend is None:
-            return None
-        frames = pool1.map(lambda _: legend.copy(), composites)
-        pool1.map(lambda x: x[0].paste(x[1], (0, 0)), zip(frames, composites))
-        return frames
+        frames = []
+        if bg and legend:
+            for time_str in self._get_time_strs():
+                fg = self._get_wximg(time_str)
+                if fg is not None:
+                    frames.append(legend.copy())
+                    frames[-1].paste(PIL.Image.alpha_composite(bg, fg), (0, 0))
+        return frames or None
 
     def _get_image(self, url): # pylint: disable=no-self-use
         '''
         Fetch an image from the BOM.
         '''
-        self._log.info('Getting image %s', url)
+        self._log.debug('Getting image %s', url)
         response = requests.get(url)
         if response.status_code == 200:
             image = PIL.Image.open(io.BytesIO(response.content))
-            return image.convert('RGBA')
+            rgba_img = image.convert('RGBA')
+            image.close()
+            return rgba_img
         return None
 
     def _get_legend(self):
         '''
         Fetch the BOM colorbar legend image.
         '''
-        self._log.info('Getting legend at %s', self._t0)
+        self._log.debug('Getting legend at %s', self._t0)
         url = self._get_url('products/radar_transparencies/IDR.legend.0.png')
         return self._get_image(url)
 
@@ -201,10 +190,10 @@ class BOMRadarLoop:
         loop = io.BytesIO()
         frames = self._get_frames()
         if frames is not None:
-            self._log.info('Got %s frames for %s at %s', len(frames), self._location, self._t0)
+            self._log.debug('Got %s frames for %s at %s', len(frames), self._location, self._t0)
             frames[0].save(loop, append_images=frames[1:], duration=500, format='GIF', loop=0, save_all=True)
         else:
-            self._log.info('Got NO frames for %s at %s', self._location, self._t0)
+            self._log.warning('Got NO frames for %s at %s', self._location, self._t0)
             PIL.Image.new('RGB', (512, 557)).save(loop, format='GIF')
         if self._outfile:
             outdir = os.path.dirname(self._outfile)
@@ -225,14 +214,14 @@ class BOMRadarLoop:
         Return a list of strings representing YYYYMMDDHHMM times for the most
         recent set of radar images to be used to create the animated GIF.
         '''
-        self._log.info('Getting time strings starting at %s', self._t0)
+        self._log.debug('Getting time strings starting at %s', self._t0)
         frame_numbers = range(self._frames, 0, -1)
         tz = dt.timezone.utc
         f = lambda n: dt.datetime.fromtimestamp(self._t0 - (self._delta * n), tz=tz).strftime('%Y%m%d%H%M')
         return [f(n) for n in frame_numbers]
 
     def _get_url(self, path): # pylint: disable=no-self-use
-        self._log.info('Getting URL for path %s', path)
+        self._log.debug('Getting URL for path %s', path)
         return 'http://www.bom.gov.au/%s' % path
 
     def _get_wximg(self, time_str):
@@ -241,7 +230,7 @@ class BOMRadarLoop:
         get_image() returns None if the image could not be fetched, so the
         caller must deal with that possibility.
         '''
-        self._log.info('Getting radar imagery for %s at %s', self._location, time_str)
+        self._log.debug('Getting radar imagery for %s at %s', self._location, time_str)
         suffix = 'radar/IDR%s.T.%s.png' % (self._radar_id, time_str)
         url = self._get_url(suffix)
         return self._get_image(url)
