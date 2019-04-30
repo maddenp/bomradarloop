@@ -125,14 +125,14 @@ class BOMRadarLoop:
         names), and distance-from-radar range markings, and merge into a single
         image.
         '''
-        self._log.info('Getting background for %s at %s', self._location, self._t0)
+        self._log.debug('Getting background for %s at %s', self._location, self._t0)
         suffix0 = 'products/radar_transparencies/IDR%s.background.png'
         url0 = self._get_url(suffix0 % self._radar_id)
         background = self._get_image(url0)
         if background is None:
             return None
         for layer in ('topography', 'locations', 'range'):
-            self._log.info('Getting %s for %s at %s', layer, self._location, self._t0)
+            self._log.debug('Getting %s for %s at %s', layer, self._location, self._t0)
             suffix1 = 'products/radar_transparencies/IDR%s.%s.png' % (self._radar_id, layer)
             url1 = self._get_url(suffix1)
             image = self._get_image(url1)
@@ -170,7 +170,7 @@ class BOMRadarLoop:
         '''
         Fetch an image from the BOM.
         '''
-        self._log.info('Getting image %s', url)
+        self._log.debug('Getting image %s', url)
         response = requests.get(url)
         if response.status_code == 200:
             image = PIL.Image.open(io.BytesIO(response.content))
@@ -183,7 +183,7 @@ class BOMRadarLoop:
         '''
         Fetch the BOM colorbar legend image.
         '''
-        self._log.info('Getting legend at %s', self._t0)
+        self._log.debug('Getting legend at %s', self._t0)
         url = self._get_url('products/radar_transparencies/IDR.legend.0.png')
         return self._get_image(url)
 
@@ -197,10 +197,10 @@ class BOMRadarLoop:
         loop = io.BytesIO()
         frames = self._get_frames()
         if frames is not None:
-            self._log.info('Got %s frames for %s at %s', len(frames), self._location, self._t0)
+            self._log.debug('Got %s frames for %s at %s', len(frames), self._location, self._t0)
             frames[0].save(loop, append_images=frames[1:], duration=500, format='GIF', loop=0, save_all=True)
         else:
-            self._log.info('Got NO frames for %s at %s', self._location, self._t0)
+            self._log.warn('Got NO frames for %s at %s', self._location, self._t0)
             PIL.Image.new('RGB', (512, 557)).save(loop, format='GIF')
         if self._outfile:
             outdir = os.path.dirname(self._outfile)
@@ -221,14 +221,14 @@ class BOMRadarLoop:
         Return a list of strings representing YYYYMMDDHHMM times for the most
         recent set of radar images to be used to create the animated GIF.
         '''
-        self._log.info('Getting time strings starting at %s', self._t0)
+        self._log.debug('Getting time strings starting at %s', self._t0)
         frame_numbers = range(self._frames, 0, -1)
         tz = dt.timezone.utc
         f = lambda n: dt.datetime.fromtimestamp(self._t0 - (self._delta * n), tz=tz).strftime('%Y%m%d%H%M')
         return [f(n) for n in frame_numbers]
 
     def _get_url(self, path): # pylint: disable=no-self-use
-        self._log.info('Getting URL for path %s', path)
+        self._log.debug('Getting URL for path %s', path)
         return 'http://www.bom.gov.au/%s' % path
 
     def _get_wximg(self, time_str):
@@ -237,7 +237,7 @@ class BOMRadarLoop:
         get_image() returns None if the image could not be fetched, so the
         caller must deal with that possibility.
         '''
-        self._log.info('Getting radar imagery for %s at %s', self._location, time_str)
+        self._log.debug('Getting radar imagery for %s at %s', self._location, time_str)
         suffix = 'radar/IDR%s.T.%s.png' % (self._radar_id, time_str)
         url = self._get_url(suffix)
         return self._get_image(url)
