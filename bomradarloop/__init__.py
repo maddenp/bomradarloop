@@ -194,7 +194,7 @@ class BOMRadarLoop:
             self._log.debug('Got %s frames for %s at %s', len(frames), self._location, self._t0)
             frames[0].save(loop, append_images=frames[1:], duration=500, format='GIF', loop=0, save_all=True)
         else:
-            self._log.warn('Got NO frames for %s at %s', self._location, self._t0)
+            self._log.warning('Got NO frames for %s at %s', self._location, self._t0)
             PIL.Image.new('RGB', (512, 557)).save(loop, format='GIF')
         if self._outfile:
             outdir = os.path.dirname(self._outfile)
