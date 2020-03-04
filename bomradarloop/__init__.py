@@ -67,6 +67,18 @@ RADARS = {
 }
 
 
+OFFSETBYONERADARS = ['ID 521', 'ID 761', 'ID 251', 'ID 651', 'ID 652',
+                     'ID 653', 'ID 654', 'ID 191', 'ID 221', 'ID 231', 'ID 241', 'ID 281',
+                     'ID 301', 'ID 311', 'ID 321', 'ID 322', 'ID 323', 'ID 361', 'ID 391',
+                     'ID 401', 'ID 411', 'ID 441', 'ID 491', 'ID 501', 'ID 502', 'ID 503',
+                     'ID 51', 'ID 531', 'ID 551', 'ID 561', 'ID 61', 'ID 62', 'ID 63', 'ID 651',
+                     'ID 652', 'ID 653', 'ID 661', 'ID 671', 'ID 681', 'ID 691', 'ID 711',
+                     'ID 721', 'ID 731', 'ID 751', 'ID 781', 'ID 81', 'ID 141', 'ID 151',
+                     'ID 152', 'ID 153', 'ID 161', 'ID 171', 'ID 271', 'ID 291', 'ID 321',
+                     'ID 322', 'ID 323', 'ID 331', 'ID 381', 'ID 461', 'ID 501', 'ID 502',
+                     'ID 503', 'ID 581', 'ID 641', 'ID 651', 'ID 652', 'ID 653', 'ID 701',
+                     'ID 791', 'ID 021', 'ID 041', 'ID 031', 'ID 081', 'ID 051', 'ID 071']
+
 class BOMRadarLoop:
 
     def __init__(self, location=None, radar_id=None, delta=None, frames=None, outfile=None, logger=None):
@@ -217,8 +229,17 @@ class BOMRadarLoop:
         self._log.debug('Getting time strings starting at %s', self._t0)
         frame_numbers = range(self._frames, 0, -1)
         tz = dt.timezone.utc
+        '''
+            f returns timestamps that have multiples of 6 (6, 12, 18...) which is some radars.
+            fdash returns timestamps that are one less that the multiples of 6, which is the other radars.
+        '''
         f = lambda n: dt.datetime.fromtimestamp(self._t0 - (self._delta * n), tz=tz).strftime('%Y%m%d%H%M')
-        return [f(n) for n in frame_numbers]
+        fdash = lambda n: dt.datetime.fromtimestamp(self._t0 - 1 - (self._delta * n), tz=tz).strftime('%Y%m%d%H%M')
+
+        if self._location in OFFSETBYONERADARS:
+            return [fdash(n) for n in frame_numbers]
+        else:
+            return [f(n) for n in frame_numbers]
 
     def _get_url(self, path): # pylint: disable=no-self-use
         self._log.debug('Getting URL for path %s', path)
