@@ -219,7 +219,7 @@ class BOMRadarLoop:
         compensate for this fact when producing time strings for 512km loops.
         '''
         self._log.debug('Getting time strings starting at %s', self._t0)
-        if len(self._radar_id != 3):
+        if len(self._radar_id) != 3:
             raise ValueError('Radar ID must be 3 digits')
         resolution = {1: 512, 2: 256, 3: 128, 4: 64}[int(self._radar_id[-1])]
         offset = {360: -1, 600: -3}.get(self._delta, 0) if resolution == 512 else 0
