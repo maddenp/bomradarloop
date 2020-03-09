@@ -4,71 +4,72 @@ import os
 
 os.makedirs('allimages')
 
+# NSW: http://www.bom.gov.au/australia/radar/nsw_radar_sites_table.shtml
+#  NT: http://www.bom.gov.au/australia/radar/nt_radar_sites_table.shtml
+# QLD: http://www.bom.gov.au/australia/radar/qld_radar_sites_table.shtml
+#  SA: http://www.bom.gov.au/australia/radar/sa_radar_sites_table.shtml
+# TAS: http://www.bom.gov.au/australia/radar/tas_radar_sites_table.shtml
+# VIC: http://www.bom.gov.au/australia/radar/vic_radar_sites_table.shtml
+#  WA: http://www.bom.gov.au/australia/radar/wa_radar_sites_table.shtml
+
 # Legend: 1 => 512km, 2 => 256km, 3 => 128km, 4 => 64km
 
 for radar_id in (
-        # QLD: http://www.bom.gov.au/australia/radar/qld_radar_sites_table.shtml
-        24: (1, 2, 3), # Bowen
-        50: (1, 2, 3), # Brisbane (Marburg)
-        66: (1, 2, 3, 4), # Brisbane (Mt Stapylton)
-        19: (1, 2, 3, 4), # Cairns
-        72: (1, 2, 3, 4), # Emerald
-        23: (1, 2, 3), # Gladstone
-        36: (1, 2, 3), # Gulf of Carpentaria (Mornington Is)
-        8: (1, 2, 3, 4), # Gympie (Mt Kanigan)
-        56: (1, 2, 3), # Longreach
-        22: (1, 2, 3), # Mackay
-        75: (1, 2, 3, 4), # Mount Isa
-        73: (1, 2, 3, 4), # Townsville (Hervey Range)
-        67: (1, 2, 3), # Warrego
-        78: (1, 2, 3, 4), # Weipa
-        41: (1, 2, 3), # Willis Island
-        # VIC: http://www.bom.gov.au/australia/radar/vic_radar_sites_table.shtml
-        68: (1, 2, 3), # Bairnsdale
-        2: (1, 2, 3, 4), # Melbourne
-        30: (1, 2, 3), # Mildura
-        49: (1, 2, 3, 4), # Yarrawonga
-        # WA: http://www.bom.gov.au/australia/radar/wa_radar_sites_table.shtml
-        31: (1, 2, 3, 4), # Albany
-        17: (1, 2, 3), # Broome
-        5: (1, 2, 3), # Carnarvon
-        15: (1, 2, 3), # Dampier
-        32: (1, 2, 3, 4), # Esperance
-        6: (1, 2, 3, 4), # Geraldton
-        44: (1, 2, 3), # Giles
-        39: (1, 2, 3), # Halls Creek
-        48: (1, 2, 3, 4), # Kalgoorlie
-        29: (1, 2, 3), # Learmonth
-        38: (1, 2, 3, 4), # Newdegate
-        70: (1, 2, 3, 4), # Perth (Serpentine)
-        16: (1, 2, 3), # Pt Hedland
-        58: (1, 2, 3, 4), # South Doodlakine
-        79: (1, 2, 3, 4), # Watheroo
-        7: (1, 2, 3), # Wyndham
-        # SA: http://www.bom.gov.au/australia/radar/sa_radar_sites_table.shtml
-        64: (1, 2, 3, 4), # Adelaide (Buckland Park)
-        46: (1, 2, 3), # Adelaide (Sellicks Hill)
-        33: (1, 2, 3), # Ceduna
-        14: (1, 2, 3), # Mt Gambier
-        27: (1, 2, 3), # Woomera
-        # TAS: http://www.bom.gov.au/australia/radar/tas_radar_sites_table.shtml
-        76: (1, 2, 3, 4), # Hobart (Mt Koonya)
-        52: (1, 2, 3, 4), # N.W. Tasmania (West Takone)
-        # NT: http://www.bom.gov.au/australia/radar/nt_radar_sites_table.shtml
-        25: (1, 2, 3), # Alice Springs
-        63: (1, 2, 3, 4), # Darwin (Berrimah)
-        9: (1, 2, 3), # Gove
-        42: (1, 2, 3), # Katherine (Tindal)
-        77: (1, 2, 3, 4), # Warruwi
-        # NSW: http://www.bom.gov.au/australia/radar/nsw_radar_sites_table.shtml
-        40: (1, 2, 3, 4), # Canberra (Captains Flat)
-        28: (1, 2, 3), # Grafton
-        53: (1, 2, 3), # Moree
-        69: (1, 2, 3, 4), # Namoi (Blackjack Mountain)
-        4: (1, 2, 3, 4), # Newcastle
-        71: (1, 2, 3, 4), # Sydney (Terrey Hills)
-        55: (1, 2, 3), # Wagga Wagga
-        3: (1, 2, 3, 4), # Wollongong (Appin)
+        '02': (1, 2, 3, 4), # [VIC] Melbourne
+        '03': (1, 2, 3, 4), # [NSW] Wollongong (Appin)
+        '04': (1, 2, 3, 4), # [NSW] Newcastle
+        '05': (1, 2, 3),    # [WA] Carnarvon
+        '06': (1, 2, 3, 4), # [WA] Geraldton
+        '07': (1, 2, 3),    # [WA] Wyndham
+        '08': (1, 2, 3, 4), # [QLD] Gympie (Mt Kanigan)
+        '09': (1, 2, 3),    # [NT] Gove
+        '14': (1, 2, 3),    # [SA] Mt Gambier
+        '15': (1, 2, 3),    # [WA] Dampier
+        '16': (1, 2, 3),    # [WA] Pt Hedland
+        '17': (1, 2, 3),    # [WA] Broome
+        '19': (1, 2, 3, 4), # [QLD] Cairns
+        '22': (1, 2, 3),    # [QLD] Mackay
+        '23': (1, 2, 3),    # [QLD] Gladstone
+        '24': (1, 2, 3),    # [QLD] Bowen
+        '25': (1, 2, 3),    # [NT] Alice Springs
+        '27': (1, 2, 3),    # [SA] Woomera
+        '28': (1, 2, 3),    # [NSW] Grafton
+        '29': (1, 2, 3),    # [WA] Learmonth
+        '30': (1, 2, 3),    # [VIC] Mildura
+        '31': (1, 2, 3, 4), # [WA] Albany
+        '32': (1, 2, 3, 4), # [WA] Esperance
+        '33': (1, 2, 3),    # [SA] Ceduna
+        '36': (1, 2, 3),    # [QLD] Gulf of Carpentaria (Mornington Is)
+        '38': (1, 2, 3, 4), # [WA] Newdegate
+        '39': (1, 2, 3),    # [WA] Halls Creek
+        '40': (1, 2, 3, 4), # [NSW] Canberra (Captains Flat)
+        '41': (1, 2, 3),    # [QLD] Willis Island
+        '42': (1, 2, 3),    # [NT] Katherine (Tindal)
+        '44': (1, 2, 3),    # [WA] Giles
+        '46': (1, 2, 3),    # [SA] Adelaide (Sellicks Hill)
+        '48': (1, 2, 3, 4), # [WA] Kalgoorlie
+        '49': (1, 2, 3, 4), # [VIC] Yarrawonga
+        '50': (1, 2, 3),    # [QLD] Brisbane (Marburg)
+        '52': (1, 2, 3, 4), # [TAS] N.W. Tasmania (West Takone)
+        '53': (1, 2, 3),    # [NSW] Moree
+        '55': (1, 2, 3),    # [NSW] Wagga Wagga
+        '56': (1, 2, 3),    # [QLD] Longreach
+        '58': (1, 2, 3, 4), # [WA] South Doodlakine
+        '63': (1, 2, 3, 4), # [NT] Darwin (Berrimah)
+        '64': (1, 2, 3, 4), # [SA] Adelaide (Buckland Park)
+        '66': (1, 2, 3, 4), # [QLD] Brisbane (Mt Stapylton)
+        '67': (1, 2, 3),    # [QLD] Warrego
+        '68': (1, 2, 3),    # [VIC] Bairnsdale
+        '69': (1, 2, 3, 4), # [NSW] Namoi (Blackjack Mountain)
+        '70': (1, 2, 3, 4), # [WA] Perth (Serpentine)
+        '71': (1, 2, 3, 4), # [NSW] Sydney (Terrey Hills)
+        '72': (1, 2, 3, 4), # [QLD] Emerald
+        '73': (1, 2, 3, 4), # [QLD] Townsville (Hervey Range)
+        '75': (1, 2, 3, 4), # [QLD] Mount Isa
+        '76': (1, 2, 3, 4), # [TAS] Hobart (Mt Koonya)
+        '77': (1, 2, 3, 4), # [NT] Warruwi
+        '78': (1, 2, 3, 4), # [QLD] Weipa
+        '79': (1, 2, 3, 4), # [WA] Watheroo
 )
 
 bom = BOMRadarLoop(None, 521, 360, 6, './521.gif', logger=None)
