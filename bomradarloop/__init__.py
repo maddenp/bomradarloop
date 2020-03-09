@@ -9,7 +9,7 @@ import requests
 
 RADARS = {
     'Adelaide':        {'id': '643', 'delta': 360, 'frames': 6},
-    'Albany':          {'id': '313', 'delta': 600, 'frames': 4},
+    'Albany':          {'id': '313', 'delta': 360, 'frames': 6},
     'AliceSprings':    {'id': '253', 'delta': 600, 'frames': 4},
     'Bairnsdale':      {'id': '683', 'delta': 600, 'frames': 4},
     'Bowen':           {'id': '243', 'delta': 600, 'frames': 4},
@@ -22,8 +22,8 @@ RADARS = {
     'Dampier':         {'id': '153', 'delta': 600, 'frames': 4},
     'Darwin':          {'id': '633', 'delta': 360, 'frames': 6},
     'Emerald':         {'id': '723', 'delta': 600, 'frames': 4},
-    'Esperance':       {'id': '323', 'delta': 600, 'frames': 4},
-    'Geraldton':       {'id': '063', 'delta': 600, 'frames': 4},
+    'Esperance':       {'id': '323', 'delta': 360, 'frames': 6},
+    'Geraldton':       {'id': '063', 'delta': 360, 'frames': 6},
     'Giles':           {'id': '443', 'delta': 600, 'frames': 4},
     'Gladstone':       {'id': '233', 'delta': 600, 'frames': 4},
     'Gove':            {'id': '093', 'delta': 600, 'frames': 4},
@@ -66,18 +66,6 @@ RADARS = {
     'Yarrawonga':      {'id': '493', 'delta': 360, 'frames': 6},
 }
 
-
-OFFSETBYONERADARS = ['ID 521', 'ID 761', 'ID 251', 'ID 651', 'ID 652',
-                     'ID 653', 'ID 654', 'ID 191', 'ID 221', 'ID 231', 'ID 241', 'ID 281',
-                     'ID 301', 'ID 311', 'ID 321', 'ID 322', 'ID 323', 'ID 361', 'ID 391',
-                     'ID 401', 'ID 411', 'ID 441', 'ID 491', 'ID 501', 'ID 502', 'ID 503',
-                     'ID 51', 'ID 531', 'ID 551', 'ID 561', 'ID 61', 'ID 62', 'ID 63', 'ID 651',
-                     'ID 652', 'ID 653', 'ID 661', 'ID 671', 'ID 681', 'ID 691', 'ID 711',
-                     'ID 721', 'ID 731', 'ID 751', 'ID 781', 'ID 81', 'ID 141', 'ID 151',
-                     'ID 152', 'ID 153', 'ID 161', 'ID 171', 'ID 271', 'ID 291', 'ID 321',
-                     'ID 322', 'ID 323', 'ID 331', 'ID 381', 'ID 461', 'ID 501', 'ID 502',
-                     'ID 503', 'ID 581', 'ID 641', 'ID 651', 'ID 652', 'ID 653', 'ID 701',
-                     'ID 791', 'ID 021', 'ID 041', 'ID 031', 'ID 081', 'ID 051', 'ID 071']
 
 class BOMRadarLoop:
 
@@ -224,22 +212,21 @@ class BOMRadarLoop:
     def _get_time_strs(self):
         '''
         Return a list of strings representing YYYYMMDDHHMM times for the most
-        recent set of radar images to be used to create the animated GIF.
+        recent set of radar images to be used to create the animated GIF. The
+        timestamps on 512km-resolution radar-loop images are offset from those
+        of the other resolutions by -1 hour for every-6-minutes (delta=360)
+        radars, and -3 minutes for every-10-minutes (delta=600) radars, so
+        compensate for this fact when producing time strings for 512km loops.
         '''
         self._log.debug('Getting time strings starting at %s', self._t0)
-        frame_numbers = range(self._frames, 0, -1)
+        if len(self._radar_id != 3):
+            raise ValueError('Radar ID must be 3 digits')
+        resolution = {1: 512, 2: 256, 3: 128, 4: 64}[int(self._radar_id[-1])]
+        offset = {360: -1, 600: -3}.get(self._delta, 0) if resolution == 512 else 0
         tz = dt.timezone.utc
-        '''
-            f returns timestamps that have multiples of 6 (6, 12, 18...) which is some radars.
-            fdash returns timestamps that are one less that the multiples of 6, which is the other radars.
-        '''
-        f = lambda n: dt.datetime.fromtimestamp(self._t0 - (self._delta * n), tz=tz).strftime('%Y%m%d%H%M')
-        fdash = lambda n: dt.datetime.fromtimestamp(self._t0 - 1 - (self._delta * n), tz=tz).strftime('%Y%m%d%H%M')
-
-        if self._location in OFFSETBYONERADARS:
-            return [fdash(n) for n in frame_numbers]
-        else:
-            return [f(n) for n in frame_numbers]
+        f = lambda n: dt.datetime.fromtimestamp(self._t0 + offset - (self._delta * n), tz=tz).strftime('%Y%m%d%H%M')
+        frame_numbers = range(self._frames, 0, -1)
+        return [f(n) for n in frame_numbers]
 
     def _get_url(self, path): # pylint: disable=no-self-use
         self._log.debug('Getting URL for path %s', path)
