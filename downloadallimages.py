@@ -1,6 +1,75 @@
 """ This will download all of the current radar animations available 2020-03-04 """
 from bomradarloop import BOMRadarLoop
-import logging
+import os
+
+os.makedirs('allimages')
+
+# Legend: 1 => 512km, 2 => 256km, 3 => 128km, 4 => 64km
+
+for radar_id in (
+        # QLD: http://www.bom.gov.au/australia/radar/qld_radar_sites_table.shtml
+        24: (1, 2, 3), # Bowen
+        50: (1, 2, 3), # Brisbane (Marburg)
+        66: (1, 2, 3, 4), # Brisbane (Mt Stapylton)
+        19: (1, 2, 3, 4), # Cairns
+        72: (1, 2, 3, 4), # Emerald
+        23: (1, 2, 3), # Gladstone
+        36: (1, 2, 3), # Gulf of Carpentaria (Mornington Is)
+        8: (1, 2, 3, 4), # Gympie (Mt Kanigan)
+        56: (1, 2, 3), # Longreach
+        22: (1, 2, 3), # Mackay
+        75: (1, 2, 3, 4), # Mount Isa
+        73: (1, 2, 3, 4), # Townsville (Hervey Range)
+        67: (1, 2, 3), # Warrego
+        78: (1, 2, 3, 4), # Weipa
+        41: (1, 2, 3), # Willis Island
+        # VIC: http://www.bom.gov.au/australia/radar/vic_radar_sites_table.shtml
+        68: (1, 2, 3), # Bairnsdale
+        2: (1, 2, 3, 4), # Melbourne
+        30: (1, 2, 3), # Mildura
+        49: (1, 2, 3, 4), # Yarrawonga
+        # WA: http://www.bom.gov.au/australia/radar/wa_radar_sites_table.shtml
+        31: (1, 2, 3, 4), # Albany
+        17: (1, 2, 3), # Broome
+        5: (1, 2, 3), # Carnarvon
+        15: (1, 2, 3), # Dampier
+        32: (1, 2, 3, 4), # Esperance
+        6: (1, 2, 3, 4), # Geraldton
+        44: (1, 2, 3), # Giles
+        39: (1, 2, 3), # Halls Creek
+        48: (1, 2, 3, 4), # Kalgoorlie
+        29: (1, 2, 3), # Learmonth
+        38: (1, 2, 3, 4), # Newdegate
+        70: (1, 2, 3, 4), # Perth (Serpentine)
+        16: (1, 2, 3), # Pt Hedland
+        58: (1, 2, 3, 4), # South Doodlakine
+        79: (1, 2, 3, 4), # Watheroo
+        7: (1, 2, 3), # Wyndham
+        # SA: http://www.bom.gov.au/australia/radar/sa_radar_sites_table.shtml
+        64: (1, 2, 3, 4), # Adelaide (Buckland Park)
+        46: (1, 2, 3), # Adelaide (Sellicks Hill)
+        33: (1, 2, 3), # Ceduna
+        14: (1, 2, 3), # Mt Gambier
+        27: (1, 2, 3), # Woomera
+        # TAS: http://www.bom.gov.au/australia/radar/tas_radar_sites_table.shtml
+        76: (1, 2, 3, 4), # Hobart (Mt Koonya)
+        52: (1, 2, 3, 4), # N.W. Tasmania (West Takone)
+        # NT: http://www.bom.gov.au/australia/radar/nt_radar_sites_table.shtml
+        25: (1, 2, 3), # Alice Springs
+        63: (1, 2, 3, 4), # Darwin (Berrimah)
+        9: (1, 2, 3), # Gove
+        42: (1, 2, 3), # Katherine (Tindal)
+        77: (1, 2, 3, 4), # Warruwi
+        # NSW: http://www.bom.gov.au/australia/radar/nsw_radar_sites_table.shtml
+        40: (1, 2, 3, 4), # Canberra (Captains Flat)
+        28: (1, 2, 3), # Grafton
+        53: (1, 2, 3), # Moree
+        69: (1, 2, 3, 4), # Namoi (Blackjack Mountain)
+        4: (1, 2, 3, 4), # Newcastle
+        71: (1, 2, 3, 4), # Sydney (Terrey Hills)
+        55: (1, 2, 3), # Wagga Wagga
+        3: (1, 2, 3, 4), # Wollongong (Appin)
+)
 
 bom = BOMRadarLoop(None, 521, 360, 6, './521.gif', logger=None)
 bom = BOMRadarLoop(None, 522, 360, 6, './522.gif', logger=None)
