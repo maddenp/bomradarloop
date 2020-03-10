@@ -70,14 +70,10 @@ RADARS = {
 class BOMRadarLoop:
 
     def __init__(self, location=None, radar_id=None, delta=None, frames=None, outfile=None, logger=None):
-
         self._log = logger or logging.getLogger(__name__)
-
         if isinstance(radar_id, int):
             radar_id = '%03d' % radar_id
-
         valids = ', '.join(sorted(RADARS.keys()))
-
         if not radar_id and location not in RADARS:
             location = 'Sydney'
             self._log.error("Bad 'location' specified, using '%s' (valid locations are: %s)", location, valids)
@@ -93,13 +89,11 @@ class BOMRadarLoop:
         if radar_id and not frames:
             frames = 6
             self._log.error("No 'frames' specified for radar ID %s, using %s", radar_id, frames)
-
         self._location = location or 'ID %s' % radar_id
         self._delta = delta or RADARS[location]['delta']
         self._frames = frames or RADARS[location]['frames']
         self._radar_id = radar_id or RADARS[location]['id']
         self._outfile = outfile
-
         self._t0 = 0
         self._current = self.current
 
@@ -137,7 +131,10 @@ class BOMRadarLoop:
             url1 = self._get_url(suffix1)
             image = self._get_image(url1)
             if image is not None:
-                background = PIL.Image.alpha_composite(background, image)
+                try:
+                    background = PIL.Image.alpha_composite(background, image)
+                except ValueError:
+                    pass
         return background
 
     def _get_frames(self):
@@ -225,7 +222,7 @@ class BOMRadarLoop:
         if len(self._radar_id) != 3:
             raise ValueError('Radar ID must be 3 digits')
         resolution = {1: 512, 2: 256, 3: 128, 4: 64}[int(self._radar_id[-1])]
-        offset = {360: -1, 600: -3}.get(self._delta, 0) * 60 if resolution == 512 else 0
+        offset = {360: 5, 600: 7}.get(self._delta, 0) * 60 if resolution == 512 else 0
         tz = dt.timezone.utc
         f = lambda n: dt.datetime.fromtimestamp(self._t0 + offset - (self._delta * n), tz=tz).strftime('%Y%m%d%H%M')
         frame_numbers = range(self._frames, 0, -1)

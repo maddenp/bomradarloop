@@ -47,18 +47,18 @@ radars = {
     '39': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [WA] Halls Creek
     '40': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [NSW] Canberra (Captains Flat)
     '41': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [QLD] Willis Island
-#     '42': {'delta': 360, 'frames': 6, 'res': (1, 2, 3)},    # [NT] Katherine (Tindal)
+    '42': {'delta': 360, 'frames': 6, 'res': (1, 2, 3)},    # [NT] Katherine (Tindal)
     '44': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [WA] Giles
     '46': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [SA] Adelaide (Sellicks Hill)
-#     '48': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [WA] Kalgoorlie
-#     '49': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [VIC] Yarrawonga
+    '48': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [WA] Kalgoorlie
+    '49': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [VIC] Yarrawonga
 #   '50': {'delta': 360, 'frames': 6, 'res': (1, 2, 3)},    # [QLD] Brisbane (Marburg) (offline on 2020-03-09)
     '52': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [TAS] N.W. Tasmania (West Takone)
     '53': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [NSW] Moree
     '55': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [NSW] Wagga Wagga
     '56': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [QLD] Longreach
     '58': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [WA] South Doodlakine
-#     '63': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [NT] Darwin (Berrimah)
+    '63': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [NT] Darwin (Berrimah)
     '64': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [SA] Adelaide (Buckland Park)
     '66': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [QLD] Brisbane (Mt Stapylton)
     '67': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [QLD] Warrego
@@ -81,14 +81,14 @@ logging.basicConfig(
     datefmt="%Y-%m-%dT%H:%M:%SZ",
     level=logging.DEBUG,
 )
-
 logger = logging.getLogger()
-outdir = 'allimages'
+outdir = 'gifs'
 os.makedirs(outdir, exist_ok=True)
 for base_id, props in radars.items():
     for res in props['res']:
         radar_id = '%s%s' % (base_id, res)
         outfile = os.path.join(outdir, '%s.gif' % radar_id)
+        logger.info('Composing %s', outfile)
         bomradarloop.BOMRadarLoop(
             location=None,
             radar_id=radar_id,
