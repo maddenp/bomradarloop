@@ -14,7 +14,7 @@ import os
 #
 # 1 => 512km, 2 => 256km, 3 => 128km, 4 => 64km
 
-radars = (
+radars = {
     '02': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [VIC] Melbourne
     '03': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [NSW] Wollongong (Appin)
     '04': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [NSW] Newcastle
@@ -70,18 +70,18 @@ radars = (
     '77': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [NT] Warruwi
     '78': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [QLD] Weipa
     '79': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [WA] Watheroo
-)
+}
 
 outdir = 'allimages'
-os.makedirs(outdir)
-for radar in radars:
-    for res in radar['res']:
-        radar_id = '%s%s' % (radar, res)
+os.makedirs(outdir, exist_ok=True)
+for base_id, props in radars.items():
+    for res in props['res']:
+        radar_id = '%s%s' % (base_id, res)
         outfile = os.path.join(outdir, '%s.gif' % radar_id)
         BOMRadarLoop(
             location=None,
             radar_id=radar_id,
-            delta=radar['delta'],
-            frames=radar['frames'],
+            delta=props['delta'],
+            frames=props['frames'],
             outfile=outfile,
         )
