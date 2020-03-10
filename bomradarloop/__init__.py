@@ -166,9 +166,12 @@ class BOMRadarLoop:
         self._log.debug('Getting image %s', url)
         response = requests.get(url)
         if response.status_code == 200:
+            log_level = self._log.level
+            self._log.setLevel(logging.INFO)
             image = PIL.Image.open(io.BytesIO(response.content))
             rgba_img = image.convert('RGBA')
             image.close()
+            self._log.setLevel(log_level)
             return rgba_img
         return None
 

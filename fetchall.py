@@ -97,3 +97,4 @@ for base_id, props in radars.items():
             outfile=outfile,
             logger=logger,
         )
+        sys.exit(0)
