@@ -1,6 +1,9 @@
-""" This will download all of the current radar animations available 2020-03-04 """
-from bomradarloop import BOMRadarLoop
+import logging
 import os
+import sys
+import time
+
+import bomradarloop
 
 # Legend:
 #
@@ -72,16 +75,25 @@ radars = {
     '79': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [WA] Watheroo
 }
 
+logging.Formatter.converter = time.gmtime
+logging.basicConfig(
+    format="[%(asctime)s] %(levelname)s %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%SZ",
+    level=logging.DEBUG,
+)
+
+logger = logging.getLogger()
 outdir = 'allimages'
 os.makedirs(outdir, exist_ok=True)
 for base_id, props in radars.items():
     for res in props['res']:
         radar_id = '%s%s' % (base_id, res)
         outfile = os.path.join(outdir, '%s.gif' % radar_id)
-        BOMRadarLoop(
+        bomradarloop.BOMRadarLoop(
             location=None,
             radar_id=radar_id,
             delta=props['delta'],
             frames=props['frames'],
             outfile=outfile,
+            logger=logger,
         )
