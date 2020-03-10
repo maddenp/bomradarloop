@@ -225,7 +225,7 @@ class BOMRadarLoop:
         if len(self._radar_id) != 3:
             raise ValueError('Radar ID must be 3 digits')
         resolution = {1: 512, 2: 256, 3: 128, 4: 64}[int(self._radar_id[-1])]
-        offset = {360: -1, 600: -3}.get(self._delta, 0) if resolution == 512 else 0
+        offset = {360: -1, 600: -3}.get(self._delta, 0) * 60 if resolution == 512 else 0
         tz = dt.timezone.utc
         f = lambda n: dt.datetime.fromtimestamp(self._t0 + offset - (self._delta * n), tz=tz).strftime('%Y%m%d%H%M')
         frame_numbers = range(self._frames, 0, -1)
