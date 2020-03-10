@@ -154,7 +154,7 @@ class BOMRadarLoop:
                 if fg is not None:
                     frames.append(legend.copy())
                     frames[-1].paste(PIL.Image.alpha_composite(bg, fg), (0, 0))
-        return frames or None
+        return frames
 
     def _get_image(self, url): # pylint: disable=no-self-use
         '''
@@ -189,9 +189,16 @@ class BOMRadarLoop:
         self._log.info('Getting loop for %s at %s', self._location, self._t0)
         loop = io.BytesIO()
         frames = self._get_frames()
-        if frames is not None:
+        if frames:
             self._log.debug('Got %s frames for %s at %s', len(frames), self._location, self._t0)
-            frames[0].save(loop, append_images=frames[1:], duration=500, format='GIF', loop=0, save_all=True)
+            frames[0].save(
+                loop,
+                append_images=frames[1:],
+                duration=500,
+                format='GIF',
+                loop=0,
+                save_all=True,
+            )
         else:
             self._log.warning('Got NO frames for %s at %s', self._location, self._t0)
             PIL.Image.new('RGB', (512, 557)).save(loop, format='GIF')

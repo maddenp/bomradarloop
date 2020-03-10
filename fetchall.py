@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 import time
 
 import bomradarloop
@@ -15,7 +14,7 @@ import bomradarloop
 # VIC: http://www.bom.gov.au/australia/radar/vic_radar_sites_table.shtml
 #  WA: http://www.bom.gov.au/australia/radar/wa_radar_sites_table.shtml
 #
-# 1 => 512km, 2 => 256km, 3 => 128km, 4 => 64km
+# res: 1 => 512km, 2 => 256km, 3 => 128km, 4 => 64km
 
 radars = {
     '02': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [VIC] Melbourne
@@ -27,7 +26,7 @@ radars = {
     '08': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [QLD] Gympie (Mt Kanigan)
     '09': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [NT] Gove
     '14': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [SA] Mt Gambier
-#   '15': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [WA] Dampier (offline on 2020-03-09)
+#   '15': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [WA] Dampier (offline 2020-03-09) # pylint: disable=C0330
     '16': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [WA] Pt Hedland
     '17': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [WA] Broome
     '19': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [QLD] Cairns
@@ -52,7 +51,7 @@ radars = {
     '46': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [SA] Adelaide (Sellicks Hill)
     '48': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [WA] Kalgoorlie
     '49': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [VIC] Yarrawonga
-#   '50': {'delta': 360, 'frames': 6, 'res': (1, 2, 3)},    # [QLD] Brisbane (Marburg) (offline on 2020-03-09)
+#   '50': {'delta': 360, 'frames': 6, 'res': (1, 2, 3)},    # [QLD] Brisbane (Marburg) (offline 2020-03-10) # pylint: disable=C0330
     '52': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [TAS] N.W. Tasmania (West Takone)
     '53': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [NSW] Moree
     '55': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [NSW] Wagga Wagga
