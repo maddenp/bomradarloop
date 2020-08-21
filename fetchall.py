@@ -1,3 +1,7 @@
+"""
+Test bomradarloop by downloading all resolutions of all known-active radars.
+"""
+
 import logging
 import os
 import time

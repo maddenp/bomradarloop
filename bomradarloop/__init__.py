@@ -1,3 +1,8 @@
+"""
+Provides animated GIF images of weather-radar imagery derived the Australian
+Bureau of Meteorology (http://www.bom.gov.au/australia/radar/).
+"""
+
 import datetime as dt
 import io
 import logging
@@ -69,6 +74,10 @@ RADARS = {
 
 
 class BOMRadarLoop:
+
+    """
+    The class to be instantiated by Home Assistant
+    """
 
     def __init__(self, location=None, radar_id=None, delta=None, frames=None, outfile=None, logger=None):
         self._log = logger or logging.getLogger(__name__)

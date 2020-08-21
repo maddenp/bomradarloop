@@ -1,0 +1,20 @@
+[BASIC]
+
+argument-rgx  = [_a-zA-Z][_a-zA-Z0-9]*
+attr-rgx      = [_a-zA-Z][_a-zA-Z0-9]*
+const-rgx     = [_a-zA-Z][_a-zA-Z0-9]*
+function-rgx  = [_a-zA-Z][_a-zA-Z0-9]*
+method-rgx    = [_a-zA-Z][_a-zA-Z0-9]*
+variable-rgx  = [_a-zA-Z][_a-zA-Z0-9]*
+
+[FORMAT]
+
+max-line-length = 132
+
+[MESSAGES CONTROL]
+
+disable = R0902,R0903,R0913
+
+[REPORTS]
+
+score=no

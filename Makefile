@@ -12,4 +12,4 @@ env:
 	conda create -y -n bomradarloop -c conda-forge black pillow pylint requests
 
 test:
-	pylint --rcfile=$etc/pylintrc $(find $. -type f -name "*.py" | tr "\n" " ")
+	pylint --rcfile=pylintrc $$(find . -type f -name "*.py" | tr "\n" " ")

@@ -1,3 +1,5 @@
+# pylint: disable=C0114
+
 import setuptools
 
 with open('README', 'r') as f:
