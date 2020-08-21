@@ -86,18 +86,18 @@ logging.basicConfig(
     level=logging.DEBUG,
 )
 logger = logging.getLogger()
-outdir = 'gifs'
+outdir = "gifs"
 os.makedirs(outdir, exist_ok=True)
 for base_id, props in radars.items():
-    for res in props['res']:
-        radar_id = '%s%s' % (base_id, res)
-        outfile = os.path.join(outdir, '%s.gif' % radar_id)
-        logger.info('Composing %s', outfile)
+    for res in props["res"]:
+        radar_id = "%s%s" % (base_id, res)
+        outfile = os.path.join(outdir, "%s.gif" % radar_id)
+        logger.info("Composing %s", outfile)
         bomradarloop.BOMRadarLoop(
             location=None,
             radar_id=radar_id,
-            delta=props['delta'],
-            frames=props['frames'],
+            delta=props["delta"],
+            frames=props["frames"],
             outfile=outfile,
             logger=logger,
         )
