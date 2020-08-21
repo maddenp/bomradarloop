@@ -50,6 +50,7 @@ RADARS = {
     'NWTasmania':      {'id': '523', 'delta': 360, 'frames': 6},
     'Perth':           {'id': '703', 'delta': 360, 'frames': 6},
     'PortHedland':     {'id': '163', 'delta': 600, 'frames': 4},
+    'Rainbow':         {'id': '953', 'delta': 360, 'frames': 6},
     'SellicksHill':    {'id': '463', 'delta': 600, 'frames': 4},
     'SouthDoodlakine': {'id': '583', 'delta': 360, 'frames': 6},
     'Sydney':          {'id': '713', 'delta': 360, 'frames': 6},

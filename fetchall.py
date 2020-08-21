@@ -51,7 +51,7 @@ radars = {
     '46': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [SA] Adelaide (Sellicks Hill)
     '48': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [WA] Kalgoorlie
     '49': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [VIC] Yarrawonga
-#   '50': {'delta': 360, 'frames': 6, 'res': (1, 2, 3)},    # [QLD] Brisbane (Marburg) (offline 2020-03-10) # pylint: disable=C0330
+    '50': {'delta': 360, 'frames': 6, 'res': (1, 2, 3)},    # [QLD] Brisbane (Marburg)
     '52': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [TAS] N.W. Tasmania (West Takone)
     '53': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [NSW] Moree
     '55': {'delta': 600, 'frames': 4, 'res': (1, 2, 3)},    # [NSW] Wagga Wagga
@@ -72,6 +72,7 @@ radars = {
     '77': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [NT] Warruwi
     '78': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [QLD] Weipa
     '79': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [WA] Watheroo
+    '95': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [VIC] Rainbow
 }
 
 logging.Formatter.converter = time.gmtime
