@@ -21,6 +21,7 @@ import bomradarloop
 # res: 1 => 512km, 2 => 256km, 3 => 128km, 4 => 64km
 
 radars = {
+    # fmt: off
     '02': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [VIC] Melbourne
     '03': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [NSW] Wollongong (Appin)
     '04': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [NSW] Newcastle
@@ -77,13 +78,12 @@ radars = {
     '78': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [QLD] Weipa
     '79': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [WA] Watheroo
     '95': {'delta': 360, 'frames': 6, 'res': (1, 2, 3, 4)}, # [VIC] Rainbow
+    # fmt: on
 }
 
 logging.Formatter.converter = time.gmtime
 logging.basicConfig(
-    format="[%(asctime)s] %(levelname)s %(message)s",
-    datefmt="%Y-%m-%dT%H:%M:%SZ",
-    level=logging.DEBUG,
+    format="[%(asctime)s] %(levelname)s %(message)s", datefmt="%Y-%m-%dT%H:%M:%SZ", level=logging.DEBUG,
 )
 logger = logging.getLogger()
 outdir = "gifs"
@@ -94,10 +94,5 @@ for base_id, props in radars.items():
         outfile = os.path.join(outdir, "%s.gif" % radar_id)
         logger.info("Composing %s", outfile)
         bomradarloop.BOMRadarLoop(
-            location=None,
-            radar_id=radar_id,
-            delta=props["delta"],
-            frames=props["frames"],
-            outfile=outfile,
-            logger=logger,
+            location=None, radar_id=radar_id, delta=props["delta"], frames=props["frames"], outfile=outfile, logger=logger,
         )

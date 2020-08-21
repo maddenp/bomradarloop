@@ -13,6 +13,7 @@ import PIL.Image
 import requests
 
 RADARS = {
+    # fmt: off
     'Adelaide':        {'id': '643', 'delta': 360, 'frames': 6},
     'Albany':          {'id': '313', 'delta': 360, 'frames': 6},
     'AliceSprings':    {'id': '253', 'delta': 600, 'frames': 4},
@@ -70,6 +71,7 @@ RADARS = {
     'Woomera':         {'id': '273', 'delta': 600, 'frames': 4},
     'Wyndham':         {'id': '073', 'delta': 600, 'frames': 4},
     'Yarrawonga':      {'id': '493', 'delta': 360, 'frames': 6},
+    # fmt: on
 }
 
 
@@ -202,12 +204,7 @@ class BOMRadarLoop:
         if frames:
             self._log.debug("Got %s frames for %s at %s", len(frames), self._location, self._t0)
             frames[0].save(
-                loop,
-                append_images=frames[1:],
-                duration=500,
-                format="GIF",
-                loop=0,
-                save_all=True,
+                loop, append_images=frames[1:], duration=500, format="GIF", loop=0, save_all=True,
             )
         else:
             self._log.warning("Got NO frames for %s at %s", self._location, self._t0)
