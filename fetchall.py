@@ -12,7 +12,11 @@ EXCLUDE = [
     "15",  # Dampier offline as of 2020-08-23
 ]
 
-radars = {x["id"]: {x["delta"], x["frames"], x["res"]} for x in bomradarloop.RADARS if x["id"] not in EXCLUDE}
+radars = {
+    v["id"]: {"delta": v["delta"], "frames": v["frames"], "res": v["res"]}
+    for _, v in bomradarloop.RADARS.items()
+    if v["id"] not in EXCLUDE
+}
 
 logging.Formatter.converter = time.gmtime
 logging.basicConfig(

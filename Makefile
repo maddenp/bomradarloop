@@ -1,4 +1,4 @@
-TARGETS = black dist env test upload
+TARGETS = black dist env gifs test upload
 
 .PHONY: $(TARGETS)
 
@@ -10,6 +10,9 @@ black:
 
 dist:
 	python setup.py sdist bdist_wheel
+
+gifs:
+	python fetchall.py
 
 env:
 	conda create -y -n bomradarloop -c conda-forge black pillow pylint requests twine
