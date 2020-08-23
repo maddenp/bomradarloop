@@ -24,8 +24,8 @@ import requests
 #
 # res: 1 => 512km, 2 => 256km, 3 => 128km, 4 => 64km
 
+# fmt: off
 RADARS = {
-    # fmt: off
     "Adelaide":        {"id": "64", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Adelaide (Buckland Park) [SA]
     "Albany":          {"id": "31", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Albany [WA]
     "AliceSprings":    {"id": "25", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Alice Springs [NT]
@@ -82,10 +82,9 @@ RADARS = {
     "Wollongong":      {"id": "03", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Wollongong (Appin) [NSW]
     "Woomera":         {"id": "27", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Woomera [SA]
     "Wyndham":         {"id": "07", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Wyndham [WA]
-    "Yarrawonga":      {"id": "49", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)},
-    # Yarrawonga [VIC]
-    # fmt: on
+    "Yarrawonga":      {"id": "49", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Yarrawonga [VIC]
 }
+# fmt: on
 
 DEFAULT_RESOLUTION = "3"
 
