@@ -12,15 +12,13 @@ EXCLUDE = [
     "15",  # Dampier offline as of 2020-08-23
 ]
 
-radars = {
-    v["id"]: v["res"]
-    for _, v in bomradarloop.RADARS.items()
-    if v["id"] not in EXCLUDE
-}
+radars = {v["id"]: v["res"] for _, v in bomradarloop.RADARS.items() if v["id"] not in EXCLUDE}
 
 logging.Formatter.converter = time.gmtime
 logging.basicConfig(
-    format="[%(asctime)s] %(levelname)s %(message)s", datefmt="%Y-%m-%dT%H:%M:%SZ", level=logging.DEBUG,
+    format="[%(asctime)s] %(levelname)s %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%SZ",
+    level=logging.DEBUG,
 )
 logger = logging.getLogger()
 outdir = "gifs"
@@ -31,5 +29,8 @@ for base_id, ress in radars.items():
         outfile = os.path.join(outdir, "%s.gif" % radar_id)
         logger.info("Composing %s", outfile)
         bomradarloop.BOMRadarLoop(
-            location=None, radar_id=radar_id, outfile=outfile, logger=logger,
+            location=None,
+            radar_id=radar_id,
+            outfile=outfile,
+            logger=logger,
         )
