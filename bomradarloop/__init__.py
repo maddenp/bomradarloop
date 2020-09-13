@@ -129,12 +129,13 @@ class BOMRadarLoop:
         t1 = now - (now % 300)  # update every 5 minutes
         if t1 > self._t0:
             self._t0 = t1
-            self._current = self._get_loop()
+            self._current = self._loop
         return self._current
 
     # Private methods
 
-    def _get_background(self):
+    @property
+    def _background(self):
 
         """
         Fetch the background map, then the topography, locations (e.g. city
@@ -144,15 +145,15 @@ class BOMRadarLoop:
 
         self._log.debug("Getting background for %s at %s", self._location, self._t0)
         suffix = "products/radar_transparencies/IDR%s.background.png"
-        url = self._get_url(suffix % self._radar_id)
-        background = self._get_image(url)
+        url = self._url(suffix % self._radar_id)
+        background = self._image(url)
         if background is None:
             return None
         for layer in ("topography", "locations", "range"):
             self._log.debug("Getting %s for %s at %s", layer, self._location, self._t0)
             suffix = "products/radar_transparencies/IDR%s.%s.png" % (self._radar_id, layer)
-            url = self._get_url(suffix)
-            image = self._get_image(url)
+            url = self._url(suffix)
+            image = self._image(url)
             if image is not None:
                 try:
                     background = PIL.Image.alpha_composite(background, image)
@@ -160,7 +161,8 @@ class BOMRadarLoop:
                     pass
         return background
 
-    def _get_frames(self):
+    @property
+    def _frames(self):
 
         """
         Fetch a radar image for each expected time, composite it with a common
@@ -170,18 +172,18 @@ class BOMRadarLoop:
         """
 
         self._log.debug("Getting frames for %s at %s", self._location, self._t0)
-        bg = self._get_background()
-        legend = self._get_legend()
+        bg = self._background
+        legend = self._legend
         frames = []
         if bg and legend:
-            for image_name in self._get_image_names():
-                fg = self._get_image(self._get_url(image_name))
+            for image_name in self._image_names:
+                fg = self._image(self._url(image_name))
                 if fg is not None:
                     frames.append(legend.copy())
                     frames[-1].paste(PIL.Image.alpha_composite(bg, fg), (0, 0))
         return frames
 
-    def _get_image(self, url):
+    def _image(self, url):
 
         """
         Fetch an image from the BOM.
@@ -199,14 +201,15 @@ class BOMRadarLoop:
             return rgba_img
         return None
 
-    def _get_image_names(self):
+    @property
+    def _image_names(self):
 
         """
         Return the currently available frame images for the given radar,
         extracted from the BOM's HTML.
         """
 
-        url = self._get_url("products/IDR%s.loop.shtml" % self._radar_id)
+        url = self._url("products/IDR%s.loop.shtml" % self._radar_id)
         response = requests.get(url)
         image_names = []
         if response.status_code != 200:
@@ -218,17 +221,19 @@ class BOMRadarLoop:
                 image_names.append(m.groups()[0])
         return sorted(image_names)
 
-    def _get_legend(self):
+    @property
+    def _legend(self):
 
         """
         Fetch the BOM colorbar legend image.
         """
 
         self._log.debug("Getting legend at %s", self._t0)
-        url = self._get_url("products/radar_transparencies/IDR.legend.0.png")
-        return self._get_image(url)
+        url = self._url("products/radar_transparencies/IDR.legend.0.png")
+        return self._image(url)
 
-    def _get_loop(self):
+    @property
+    def _loop(self):
 
         """
         Return an animated GIF comprising a set of frames, where each frame
@@ -238,7 +243,7 @@ class BOMRadarLoop:
 
         self._log.info("Getting loop for %s at %s", self._location, self._t0)
         loop = io.BytesIO()
-        frames = self._get_frames()
+        frames = self._frames
         if frames:
             self._log.debug("Got %s frames for %s at %s", len(frames), self._location, self._t0)
             frames[0].save(
@@ -266,7 +271,7 @@ class BOMRadarLoop:
                 self._log.error("Could not write image to %s", self._outfile)
         return loop.getvalue()
 
-    def _get_url(self, path):
+    def _url(self, path):
 
         """
         Return a full URL to a resource on the BOM site.
