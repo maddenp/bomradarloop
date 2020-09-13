@@ -65,7 +65,7 @@ RADARS = {
     "Namoi":           {"id": "69", "res": (1, 2, 3, 4)}, # Namoi (Blackjack Mountain) [NSW]
     "Newcastle":       {"id": "04", "res": (1, 2, 3, 4)}, # Newcastle [NSW]
     "Newdegate":       {"id": "38", "res": (1, 2, 3, 4)}, # Newdegate [WA]
-    "NorfolkIs":       {"id": "62", "res": (1, 2, 3, 4)}, # Norfolk Island [ET]
+    "NorfolkIs":       {"id": "62", "res": (1, 2, 3)},    # Norfolk Island [ET]
     "NWTasmania":      {"id": "52", "res": (1, 2, 3, 4)}, # N.W. Tasmania (West Takone) [TAS]
     "Perth":           {"id": "70", "res": (1, 2, 3, 4)}, # Perth (Serpentine) [WA]
     "PortHedland":     {"id": "16", "res": (1, 2, 3)},    # Pt Hedland [WA]
