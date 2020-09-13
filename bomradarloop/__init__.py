@@ -269,27 +269,6 @@ class BOMRadarLoop:
                 self._log.error("Could not write image to %s", self._outfile)
         return loop.getvalue()
 
-#     def _get_time_strs(self):
-# 
-#         """
-#         Return a list of strings representing YYYYMMDDHHMM times for the most
-#         recent set of radar images to be used to create the animated GIF. The
-#         timestamps on 512km-resolution radar-loop images are offset from those
-#         of the other resolutions by -1 hour for every-6-minutes (delta=360)
-#         radars, and -3 minutes for every-10-minutes (delta=600) radars, so
-#         compensate for this fact when producing time strings for 512km loops.
-#         """
-# 
-#         self._log.debug("Getting time strings starting at %s", self._t0)
-#         if len(self._radar_id) != 3:
-#             raise ValueError("Radar ID must be 3 digits")
-#         resolution = {1: 512, 2: 256, 3: 128, 4: 64}[int(self._radar_id[-1])]
-#         offset = {360: 5, 600: 7}.get(self._delta, 0) * 60 if resolution == 512 else 0
-#         tz = dt.timezone.utc
-#         f = lambda n: dt.datetime.fromtimestamp(self._t0 + offset - (self._delta * n), tz=tz).strftime("%Y%m%d%H%M")
-#         frame_numbers = range(self._frames, 0, -1)
-#         return [f(n) for n in frame_numbers]
-
     def _get_url(self, path):
 
         """
@@ -298,16 +277,3 @@ class BOMRadarLoop:
 
         self._log.debug("Getting URL for path %s", path)
         return "http://www.bom.gov.au/%s" % path
-
-#     def _get_wximg(self, time_str):
-# 
-#         """
-#         Return a radar weather image from the BOM website. Note that
-#         get_image() returns None if the image could not be fetched, so the
-#         caller must deal with that possibility.
-#         """
-# 
-#         self._log.debug("Getting radar imagery for %s at %s", self._location, time_str)
-#         suffix = "radar/IDR%s.T.%s.png" % (self._radar_id, time_str)
-#         url = self._get_url(suffix)
-#         return self._get_image(url)
