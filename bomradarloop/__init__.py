@@ -27,63 +27,63 @@ import requests
 
 # fmt: off
 RADARS = {
-    "Adelaide":        {"id": "64", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Adelaide (Buckland Park) [SA]
-    "Albany":          {"id": "31", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Albany [WA]
-    "AliceSprings":    {"id": "25", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Alice Springs [NT]
-    "Bairnsdale":      {"id": "68", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Bairnsdale [VIC]
-    "Bowen":           {"id": "24", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Bowen [QLD]
-    "Brisbane":        {"id": "66", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Brisbane (Mt Stapylton) [QLD]
-    "Broome":          {"id": "17", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Broome [WA]
-    "Cairns":          {"id": "19", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Cairns [QLD]
-    "Canberra":        {"id": "40", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Canberra (Captains Flat) [NSW]
-    "Carnarvon":       {"id": "05", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Carnarvon [WA]
-    "Ceduna":          {"id": "33", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Ceduna [SA]
-    "Dampier":         {"id": "15", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Dampier [WA]
-    "Darwin":          {"id": "63", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Darwin (Berrimah) [NT]
-    "Emerald":         {"id": "72", "delta": 600, "frames": 4, "res": (1, 2, 3, 4)}, # Emerald [QLD]
-    "Esperance":       {"id": "32", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Esperance [WA]
-    "Geraldton":       {"id": "06", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Geraldton [WA]
-    "Giles":           {"id": "44", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Giles [WA]
-    "Gladstone":       {"id": "23", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Gladstone [QLD]
-    "Gove":            {"id": "09", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Gove [NT]
-    "Grafton":         {"id": "28", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Grafton [NSW]
-    "Gympie":          {"id": "08", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Gympie (Mt Kanigan) [QLD]
-    "HallsCreek":      {"id": "39", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Halls Creek [WA]
-    "Hobart":          {"id": "76", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Hobart (Mt Koonya) [TAS]
-    "Kalgoorlie":      {"id": "48", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Kalgoorlie [WA]
-    "Katherine":       {"id": "42", "delta": 360, "frames": 6, "res": (1, 2, 3)},    # Katherine (Tindal) [NT]
-    "Learmonth":       {"id": "29", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Learmonth [WA]
-    "Longreach":       {"id": "56", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Longreach [QLD]
-    "Mackay":          {"id": "22", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Mackay [QLD]
-    "Marburg":         {"id": "50", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Brisbane (Marburg) [QLD]
-    "Melbourne":       {"id": "02", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Melbourne [VIC]
-    "Mildura":         {"id": "30", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Mildura [VIC]
-    "Moree":           {"id": "53", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Moree [NSW]
-    "MorningtonIs":    {"id": "36", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Gulf of Carpentaria (Mornington Is) [QLD]
-    "MountIsa":        {"id": "75", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Mount Isa [QLD]
-    "MtGambier":       {"id": "14", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Mt Gambier [SA]
-    "Namoi":           {"id": "69", "delta": 600, "frames": 4, "res": (1, 2, 3, 4)}, # Namoi (Blackjack Mountain) [NSW]
-    "Newcastle":       {"id": "04", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Newcastle [NSW]
-    "Newdegate":       {"id": "38", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Newdegate [WA]
-    "NorfolkIs":       {"id": "62", "delta": 600, "frames": 4, "res": (1, 2, 3, 4)}, # Norfolk Island [ET]
-    "NWTasmania":      {"id": "52", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # N.W. Tasmania (West Takone) [TAS]
-    "Perth":           {"id": "70", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Perth (Serpentine) [WA]
-    "PortHedland":     {"id": "16", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Pt Hedland [WA]
-    "Rainbow":         {"id": "95", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Rainbow [VIC]
-    "SellicksHill":    {"id": "46", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Adelaide (Sellicks Hill) [SA]
-    "SouthDoodlakine": {"id": "58", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # South Doodlakine [WA]
-    "Sydney":          {"id": "71", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Sydney (Terrey Hills) [NSW]
-    "Townsville":      {"id": "73", "delta": 600, "frames": 4, "res": (1, 2, 3, 4)}, # Townsville (Hervey Range) [QLD]
-    "WaggaWagga":      {"id": "55", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Wagga Wagga [NSW]
-    "Warrego":         {"id": "67", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Warrego [QLD]
-    "Warruwi":         {"id": "77", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Warruwi [NT]
-    "Watheroo":        {"id": "79", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Watheroo [WA]
-    "Weipa":           {"id": "78", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Weipa [QLD]
-    "WillisIs":        {"id": "41", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Willis Island [QLD]
-    "Wollongong":      {"id": "03", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Wollongong (Appin) [NSW]
-    "Woomera":         {"id": "27", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Woomera [SA]
-    "Wyndham":         {"id": "07", "delta": 600, "frames": 4, "res": (1, 2, 3)},    # Wyndham [WA]
-    "Yarrawonga":      {"id": "49", "delta": 360, "frames": 6, "res": (1, 2, 3, 4)}, # Yarrawonga [VIC]
+#     "Adelaide":        {"id": "64", "res": (1, 2, 3, 4)}, # Adelaide (Buckland Park) [SA]
+#     "Albany":          {"id": "31", "res": (1, 2, 3, 4)}, # Albany [WA]
+#     "AliceSprings":    {"id": "25", "res": (1, 2, 3)},    # Alice Springs [NT]
+#     "Bairnsdale":      {"id": "68", "res": (1, 2, 3)},    # Bairnsdale [VIC]
+#     "Bowen":           {"id": "24", "res": (1, 2, 3)},    # Bowen [QLD]
+#     "Brisbane":        {"id": "66", "res": (1, 2, 3, 4)}, # Brisbane (Mt Stapylton) [QLD]
+#     "Broome":          {"id": "17", "res": (1, 2, 3)},    # Broome [WA]
+    "Cairns":          {"id": "19", "res": (1, 2, 3, 4)}, # Cairns [QLD]
+#     "Canberra":        {"id": "40", "res": (1, 2, 3, 4)}, # Canberra (Captains Flat) [NSW]
+#     "Carnarvon":       {"id": "05", "res": (1, 2, 3)},    # Carnarvon [WA]
+#     "Ceduna":          {"id": "33", "res": (1, 2, 3)},    # Ceduna [SA]
+#     "Dampier":         {"id": "15", "res": (1, 2, 3)},    # Dampier [WA]
+#     "Darwin":          {"id": "63", "res": (1, 2, 3, 4)}, # Darwin (Berrimah) [NT]
+#     "Emerald":         {"id": "72", "res": (1, 2, 3, 4)}, # Emerald [QLD]
+#     "Esperance":       {"id": "32", "res": (1, 2, 3, 4)}, # Esperance [WA]
+#     "Geraldton":       {"id": "06", "res": (1, 2, 3, 4)}, # Geraldton [WA]
+#     "Giles":           {"id": "44", "res": (1, 2, 3)},    # Giles [WA]
+#     "Gladstone":       {"id": "23", "res": (1, 2, 3)},    # Gladstone [QLD]
+#     "Gove":            {"id": "09", "res": (1, 2, 3)},    # Gove [NT]
+#     "Grafton":         {"id": "28", "res": (1, 2, 3)},    # Grafton [NSW]
+#     "Gympie":          {"id": "08", "res": (1, 2, 3, 4)}, # Gympie (Mt Kanigan) [QLD]
+#     "HallsCreek":      {"id": "39", "res": (1, 2, 3)},    # Halls Creek [WA]
+#     "Hobart":          {"id": "76", "res": (1, 2, 3, 4)}, # Hobart (Mt Koonya) [TAS]
+#     "Kalgoorlie":      {"id": "48", "res": (1, 2, 3, 4)}, # Kalgoorlie [WA]
+#     "Katherine":       {"id": "42", "res": (1, 2, 3)},    # Katherine (Tindal) [NT]
+#     "Learmonth":       {"id": "29", "res": (1, 2, 3)},    # Learmonth [WA]
+#     "Longreach":       {"id": "56", "res": (1, 2, 3)},    # Longreach [QLD]
+#     "Mackay":          {"id": "22", "res": (1, 2, 3)},    # Mackay [QLD]
+#     "Marburg":         {"id": "50", "res": (1, 2, 3)},    # Brisbane (Marburg) [QLD]
+#     "Melbourne":       {"id": "02", "res": (1, 2, 3, 4)}, # Melbourne [VIC]
+#     "Mildura":         {"id": "30", "res": (1, 2, 3)},    # Mildura [VIC]
+#     "Moree":           {"id": "53", "res": (1, 2, 3)},    # Moree [NSW]
+#     "MorningtonIs":    {"id": "36", "res": (1, 2, 3)},    # Gulf of Carpentaria (Mornington Is) [QLD]
+#     "MountIsa":        {"id": "75", "res": (1, 2, 3, 4)}, # Mount Isa [QLD]
+#     "MtGambier":       {"id": "14", "res": (1, 2, 3)},    # Mt Gambier [SA]
+#     "Namoi":           {"id": "69", "res": (1, 2, 3, 4)}, # Namoi (Blackjack Mountain) [NSW]
+#     "Newcastle":       {"id": "04", "res": (1, 2, 3, 4)}, # Newcastle [NSW]
+#     "Newdegate":       {"id": "38", "res": (1, 2, 3, 4)}, # Newdegate [WA]
+#     "NorfolkIs":       {"id": "62", "res": (1, 2, 3, 4)}, # Norfolk Island [ET]
+#     "NWTasmania":      {"id": "52", "res": (1, 2, 3, 4)}, # N.W. Tasmania (West Takone) [TAS]
+#     "Perth":           {"id": "70", "res": (1, 2, 3, 4)}, # Perth (Serpentine) [WA]
+#     "PortHedland":     {"id": "16", "res": (1, 2, 3)},    # Pt Hedland [WA]
+#     "Rainbow":         {"id": "95", "res": (1, 2, 3, 4)}, # Rainbow [VIC]
+#     "SellicksHill":    {"id": "46", "res": (1, 2, 3)},    # Adelaide (Sellicks Hill) [SA]
+#     "SouthDoodlakine": {"id": "58", "res": (1, 2, 3, 4)}, # South Doodlakine [WA]
+#     "Sydney":          {"id": "71", "res": (1, 2, 3, 4)}, # Sydney (Terrey Hills) [NSW]
+#     "Townsville":      {"id": "73", "res": (1, 2, 3, 4)}, # Townsville (Hervey Range) [QLD]
+#     "WaggaWagga":      {"id": "55", "res": (1, 2, 3)},    # Wagga Wagga [NSW]
+#     "Warrego":         {"id": "67", "res": (1, 2, 3)},    # Warrego [QLD]
+#     "Warruwi":         {"id": "77", "res": (1, 2, 3, 4)}, # Warruwi [NT]
+#     "Watheroo":        {"id": "79", "res": (1, 2, 3, 4)}, # Watheroo [WA]
+#     "Weipa":           {"id": "78", "res": (1, 2, 3, 4)}, # Weipa [QLD]
+#     "WillisIs":        {"id": "41", "res": (1, 2, 3)},    # Willis Island [QLD]
+#     "Wollongong":      {"id": "03", "res": (1, 2, 3, 4)}, # Wollongong (Appin) [NSW]
+#     "Woomera":         {"id": "27", "res": (1, 2, 3)},    # Woomera [SA]
+#     "Wyndham":         {"id": "07", "res": (1, 2, 3)},    # Wyndham [WA]
+#     "Yarrawonga":      {"id": "49", "res": (1, 2, 3, 4)}, # Yarrawonga [VIC]
 }
 # fmt: on
 
@@ -96,7 +96,7 @@ class BOMRadarLoop:
     The class to be instantiated by Home Assistant
     """
 
-    def __init__(self, location=None, radar_id=None, delta=None, frames=None, outfile=None, logger=None):
+    def __init__(self, location=None, radar_id=None, outfile=None, logger=None):
         self._log = logger or logging.getLogger(__name__)
         if isinstance(radar_id, int):
             radar_id = "%03d" % radar_id
@@ -110,15 +110,7 @@ class BOMRadarLoop:
                 self._log.error("Valid 'location' specified, ignoring 'radar_id'")
             elif location:
                 self._log.error("Bad 'location' specified, using ID %s (valid locations are: %s)", radar_id, valids)
-        if radar_id and not delta:
-            delta = 360
-            self._log.error("No 'delta' specified for radar ID %s, using %s", radar_id, delta)
-        if radar_id and not frames:
-            frames = 6
-            self._log.error("No 'frames' specified for radar ID %s, using %s", radar_id, frames)
         self._location = location or "ID %s" % radar_id
-        self._delta = delta or RADARS[location]["delta"]
-        self._frames = frames or RADARS[location]["frames"]
         self._radar_id = radar_id or "%s%s" % (RADARS[location]["id"], DEFAULT_RESOLUTION)
         self._outfile = outfile
         self._t0 = 0
@@ -134,7 +126,7 @@ class BOMRadarLoop:
         """
 
         now = int(time.time())
-        t1 = now - (now % self._delta)
+        t1 = now - (now % 300)  # update every 5 minutes
         if t1 > self._t0:
             self._t0 = t1
             self._current = self._get_loop()
