@@ -7,7 +7,7 @@ with open("README", "r") as f:
 
 setuptools.setup(
     name="bomradarloop",
-    version="0.1.6",
+    version="0.1.7",
     author="Paul Madden",
     author_email="maddenp@colorado.edu",
     description="Create animated GIFs from BOM radar imagery",

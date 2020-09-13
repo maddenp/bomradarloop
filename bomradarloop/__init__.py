@@ -7,6 +7,7 @@ import datetime as dt
 import io
 import logging
 import os
+import re
 import time
 
 import PIL.Image
@@ -127,9 +128,11 @@ class BOMRadarLoop:
 
     @property
     def current(self):
+
         """
         Return the current BOM radar-loop image.
         """
+
         now = int(time.time())
         t1 = now - (now % self._delta)
         if t1 > self._t0:
@@ -140,22 +143,24 @@ class BOMRadarLoop:
     # Private methods
 
     def _get_background(self):
+
         """
         Fetch the background map, then the topography, locations (e.g. city
         names), and distance-from-radar range markings, and merge into a single
         image.
         """
+
         self._log.debug("Getting background for %s at %s", self._location, self._t0)
-        suffix0 = "products/radar_transparencies/IDR%s.background.png"
-        url0 = self._get_url(suffix0 % self._radar_id)
-        background = self._get_image(url0)
+        suffix = "products/radar_transparencies/IDR%s.background.png"
+        url = self._get_url(suffix % self._radar_id)
+        background = self._get_image(url)
         if background is None:
             return None
         for layer in ("topography", "locations", "range"):
             self._log.debug("Getting %s for %s at %s", layer, self._location, self._t0)
-            suffix1 = "products/radar_transparencies/IDR%s.%s.png" % (self._radar_id, layer)
-            url1 = self._get_url(suffix1)
-            image = self._get_image(url1)
+            suffix = "products/radar_transparencies/IDR%s.%s.png" % (self._radar_id, layer)
+            url = self._get_url(suffix)
+            image = self._get_image(url)
             if image is not None:
                 try:
                     background = PIL.Image.alpha_composite(background, image)
@@ -164,28 +169,32 @@ class BOMRadarLoop:
         return background
 
     def _get_frames(self):
+
         """
         Fetch a radar image for each expected time, composite it with a common
         background image, then overlay on the legend to produce a frame. Collect
         and return the frames, ignoring any blanks. If no frames were produced,
         return None (the caller must expect this).
         """
+
         self._log.debug("Getting frames for %s at %s", self._location, self._t0)
         bg = self._get_background()
         legend = self._get_legend()
         frames = []
         if bg and legend:
-            for time_str in self._get_time_strs():
-                fg = self._get_wximg(time_str)
+            for image_name in self._get_image_names():
+                fg = self._get_image(self._get_url(image_name))
                 if fg is not None:
                     frames.append(legend.copy())
                     frames[-1].paste(PIL.Image.alpha_composite(bg, fg), (0, 0))
         return frames
 
-    def _get_image(self, url):  # pylint: disable=no-self-use
+    def _get_image(self, url):
+
         """
         Fetch an image from the BOM.
         """
+
         self._log.debug("Getting image %s", url)
         response = requests.get(url)
         if response.status_code == 200:
@@ -198,20 +207,43 @@ class BOMRadarLoop:
             return rgba_img
         return None
 
+    def _get_image_names(self):
+
+        """
+        Return the currently available frame images for the given radar,
+        extracted from the BOM's HTML.
+        """
+
+        url = self._get_url("products/IDR%s.loop.shtml" % self._radar_id)
+        response = requests.get(url)
+        image_names = []
+        if response.status_code != 200:
+            return image_names
+        pattern = r'^theImageNames\[\d+\] = "(/radar/IDR\d{3}\.T\.\d{12}\.png)";$'
+        for line in response.text.split("\n"):
+            m = re.match(pattern, line)
+            if m:
+                image_names.append(m.groups()[0])
+        return sorted(image_names)
+
     def _get_legend(self):
+
         """
         Fetch the BOM colorbar legend image.
         """
+
         self._log.debug("Getting legend at %s", self._t0)
         url = self._get_url("products/radar_transparencies/IDR.legend.0.png")
         return self._get_image(url)
 
     def _get_loop(self):
+
         """
         Return an animated GIF comprising a set of frames, where each frame
         includes a background, one or more supplemental layers, a colorbar
         legend, and a radar image.
         """
+
         self._log.info("Getting loop for %s at %s", self._location, self._t0)
         loop = io.BytesIO()
         frames = self._get_frames()
@@ -237,36 +269,45 @@ class BOMRadarLoop:
                 self._log.error("Could not write image to %s", self._outfile)
         return loop.getvalue()
 
-    def _get_time_strs(self):
-        """
-        Return a list of strings representing YYYYMMDDHHMM times for the most
-        recent set of radar images to be used to create the animated GIF. The
-        timestamps on 512km-resolution radar-loop images are offset from those
-        of the other resolutions by -1 hour for every-6-minutes (delta=360)
-        radars, and -3 minutes for every-10-minutes (delta=600) radars, so
-        compensate for this fact when producing time strings for 512km loops.
-        """
-        self._log.debug("Getting time strings starting at %s", self._t0)
-        if len(self._radar_id) != 3:
-            raise ValueError("Radar ID must be 3 digits")
-        resolution = {1: 512, 2: 256, 3: 128, 4: 64}[int(self._radar_id[-1])]
-        offset = {360: 5, 600: 7}.get(self._delta, 0) * 60 if resolution == 512 else 0
-        tz = dt.timezone.utc
-        f = lambda n: dt.datetime.fromtimestamp(self._t0 + offset - (self._delta * n), tz=tz).strftime("%Y%m%d%H%M")
-        frame_numbers = range(self._frames, 0, -1)
-        return [f(n) for n in frame_numbers]
+#     def _get_time_strs(self):
+# 
+#         """
+#         Return a list of strings representing YYYYMMDDHHMM times for the most
+#         recent set of radar images to be used to create the animated GIF. The
+#         timestamps on 512km-resolution radar-loop images are offset from those
+#         of the other resolutions by -1 hour for every-6-minutes (delta=360)
+#         radars, and -3 minutes for every-10-minutes (delta=600) radars, so
+#         compensate for this fact when producing time strings for 512km loops.
+#         """
+# 
+#         self._log.debug("Getting time strings starting at %s", self._t0)
+#         if len(self._radar_id) != 3:
+#             raise ValueError("Radar ID must be 3 digits")
+#         resolution = {1: 512, 2: 256, 3: 128, 4: 64}[int(self._radar_id[-1])]
+#         offset = {360: 5, 600: 7}.get(self._delta, 0) * 60 if resolution == 512 else 0
+#         tz = dt.timezone.utc
+#         f = lambda n: dt.datetime.fromtimestamp(self._t0 + offset - (self._delta * n), tz=tz).strftime("%Y%m%d%H%M")
+#         frame_numbers = range(self._frames, 0, -1)
+#         return [f(n) for n in frame_numbers]
 
-    def _get_url(self, path):  # pylint: disable=no-self-use
+    def _get_url(self, path):
+
+        """
+        Return a full URL to a resource on the BOM site.
+        """
+
         self._log.debug("Getting URL for path %s", path)
         return "http://www.bom.gov.au/%s" % path
 
-    def _get_wximg(self, time_str):
-        """
-        Return a radar weather image from the BOM website. Note that
-        get_image() returns None if the image could not be fetched, so the
-        caller must deal with that possibility.
-        """
-        self._log.debug("Getting radar imagery for %s at %s", self._location, time_str)
-        suffix = "radar/IDR%s.T.%s.png" % (self._radar_id, time_str)
-        url = self._get_url(suffix)
-        return self._get_image(url)
+#     def _get_wximg(self, time_str):
+# 
+#         """
+#         Return a radar weather image from the BOM website. Note that
+#         get_image() returns None if the image could not be fetched, so the
+#         caller must deal with that possibility.
+#         """
+# 
+#         self._log.debug("Getting radar imagery for %s at %s", self._location, time_str)
+#         suffix = "radar/IDR%s.T.%s.png" % (self._radar_id, time_str)
+#         url = self._get_url(suffix)
+#         return self._get_image(url)
