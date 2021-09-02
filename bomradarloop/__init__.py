@@ -89,6 +89,9 @@ RADARS = {
 
 DEFAULT_RESOLUTION = "3"
 
+# Consider using http://reg.bom.gov.au/catalogue/data-feeds.shtml#radar
+HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"}
+
 
 class BOMRadarLoop:
 
@@ -190,7 +193,7 @@ class BOMRadarLoop:
         """
 
         self._log.debug("Getting image %s", url)
-        response = requests.get(url)
+        response = requests.get(url, headers=HEADERS)
         if response.status_code == 200:
             log_level = self._log.level
             self._log.setLevel(logging.INFO)
@@ -210,7 +213,7 @@ class BOMRadarLoop:
         """
 
         url = self._url("products/IDR%s.loop.shtml" % self._radar_id)
-        response = requests.get(url)
+        response = requests.get(url, headers=HEADERS)
         image_names = []
         if response.status_code != 200:
             return image_names
